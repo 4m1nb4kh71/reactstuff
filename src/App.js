@@ -56,13 +56,13 @@ class App extends Component  {
     
     const visibleitems = this.state.list.filter(onSearch(this.state.searchterm)).map((item)=>{
       return (
-        <div>
+       
           <div key = {item.objID}>
             <h1> {item.name}</h1> 
             <button onClick = {()=> {this.onDismiss(item.objID)}} type="button">Dismiss</button>
           </div>
           
-        </div>
+       
         
       )
     });
