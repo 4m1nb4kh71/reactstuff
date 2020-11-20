@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './App.css';
+import React , {Component} from 'react'
+const list = [
+  {
+    name:'amine',
+    age:25,
+    role:'student',
+    objID:0,
+  },
+  {
+    name:'adil',
+    age:22,
+    role:'student',
+    objID:1,
+  },
+  {
+    name:'chaymaa',
+    age:20,
+    role:'student',
+    objID:2,
+  },
+
+];
+class App extends Component  {
+  constructor(props){
+    super(props);
+
+    this.state={
+      list,
+    };
+
+  }
+
+  
+  render(){
+ 
+    const visibleitems = this.state.list.map((item)=>{
+      return (
+        <div key = {item.objID}>
+          <h1> {item.name}</h1> 
+        </div>
+      )
+    });
+   
+    return (
+      <div className="App">
+        {visibleitems}
+      </div>
+    );
+
+
+  }
+  
 }
 
 export default App;
