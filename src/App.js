@@ -22,11 +22,7 @@ const list = [
   },
 
 ];
-const onSearch = (term)=>{
-  return (item)=>{
-    return item.name.toLowerCase().includes(term.toLowerCase());
-  };
- }
+ 
 class App extends Component  {
   constructor(props){
     super(props);
@@ -52,33 +48,81 @@ class App extends Component  {
   }
   
   render(){
+    const {list,searchterm}=this.state;
  
     
-    const visibleitems = this.state.list.filter(onSearch(this.state.searchterm)).map((item)=>{
-      return (
-       
-          <div key = {item.objID}>
-            <h1> {item.name}</h1> 
-            <button onClick = {()=> {this.onDismiss(item.objID)}} type="button">Dismiss</button>
-          </div>
-          
-       
-        
-      )
-    });
+    
    
     return (
       <div className="App">
-        <form>
-            <input type = "text" onChange= {this.onsearchchange}/>
-        </form>
-        {visibleitems}
+        <Search
+         value ={searchterm} 
+         onSchange = {this.onsearchchange}
+         >
+           search
+        </Search>
+        <Table 
+          list = {list}
+          pattern = {searchterm} 
+          onDismiss = {this.onDismiss} 
+          />
       </div>
     );
-
-
   }
   
+}
+class Search extends Component{
+
+  render(){
+    const {value,onSchange,children} = this.props;
+    return (
+      <form>
+            {children} <input type = "text" onChange= {onSchange} value = {value}/>
+      </form>
+    )
+  }
+}
+
+
+const onSearch = (term)=>{
+  return (item)=>{
+    return item.name.toLowerCase().includes(term.toLowerCase());
+  };
+ }
+
+ 
+class Table extends Component {
+ 
+  render(){
+   
+    const {list,pattern,onDismiss}= this.props;
+    return (
+      
+     <div>
+       {
+         
+           list.filter(onSearch(pattern)).map((item)=>{
+            return (
+             
+                <div key = {item.objID}>
+                  <h1> {item.name}</h1> 
+                  <Button onClick = {()=> {onDismiss(item.objID)}} type="button">x</Button>
+                </div>
+      
+            );
+          })
+       }
+     </div>
+    );
+  };
+}
+class Button extends Component{
+  render(){
+    const {className="",onClick,type,children}=this.props;
+    return(
+    <button onClick={onClick} type={type}>{children}</button>
+    )
+  }
 }
 
 export default App;
