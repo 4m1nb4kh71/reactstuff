@@ -54,13 +54,15 @@ class App extends Component  {
     
    
     return (
-      <div className="App">
+      <div className="page">
+        <div className="interactions">
         <Search
          value ={searchterm} 
          onSchange = {this.onsearchchange}
          >
            search
         </Search>
+        </div>
         <Table 
           list = {list}
           pattern = {searchterm} 
@@ -98,14 +100,14 @@ class Table extends Component {
     const {list,pattern,onDismiss}= this.props;
     return (
       
-     <div>
+     <div className="table">
        {
          
            list.filter(onSearch(pattern)).map((item)=>{
             return (
              
-                <div key = {item.objID}>
-                  <h1> {item.name}</h1> 
+                <div key = {item.objID} className="table-row">
+                  <span> {item.name}</span> 
                   <Button onClick = {()=> {onDismiss(item.objID)}} type="button">x</Button>
                 </div>
       
@@ -120,7 +122,7 @@ class Button extends Component{
   render(){
     const {onClick,type,children}=this.props;
     return(
-    <button onClick={onClick} type={type}>{children}</button>
+    <button onClick={onClick} type={type} className="button">{children}</button>
     )
   }
 }
