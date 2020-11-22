@@ -118,7 +118,7 @@ class Table extends Component {
 }
 class Button extends Component{
   render(){
-    const {className="",onClick,type,children}=this.props;
+    const {onClick,type,children}=this.props;
     return(
     <button onClick={onClick} type={type}>{children}</button>
     )
