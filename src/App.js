@@ -1,43 +1,54 @@
 
 import './App.css';
-import React , {Component} from 'react'
-const list = [
-  {
-    name:'amine',
-    age:25,
-    role:'student',
-    objID:0,
-  },
-  {
-    name:'adil',
-    age:22,
-    role:'student',
-    objID:1,
-  },
-  {
-    name:'chaymaa',
-    age:20,
-    role:'student',
-    objID:2,
-  },
+import React , {Component} from 'react';
+const DEFAULT_QUERY = 'readux';
+const PATH_BASE='https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH='query=';
 
-];
+const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+const list = [];
+
+
  
 class App extends Component  {
   constructor(props){
     super(props);
 
     this.state={
-      list,searchterm:'',
+      list,
+      searchterm:DEFAULT_QUERY,
+      result:null,
+      
     };
+
     this.onDismiss = this.onDismiss.bind(this);
   }
 
+  setSearchTopStories= (result)=>{
+    this.setState({result});
+  }
+  fetchSearchTopStories = (searchTerm)=>{
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+    .then(response =>response.json())
+    .then(result =>this.setSearchTopStories(result))
+    .catch(e=>e);
+  }
+// fetching data when the component mounts 
+  componentDidMount(){
+    const {searchTerm} = this.state;
+    this.fetchSearchTopStories(searchTerm);
+   }
+//
   onDismiss = (id)=>{
-   const updatedlist = this.state.list.filter((item)=>{
-     return item.objID !== id;
+   
+    
+    const updatedhits = this.state.result.hits.filter((item)=>{
+     return item.objectID !== id;
     } );
-    this.setState({list:updatedlist});
+    this.setState({
+      result:{...this.state.result ,hits: updatedhits}
+      });
 
   }
 
@@ -48,9 +59,12 @@ class App extends Component  {
   }
   
   render(){
-    const {list,searchterm}=this.state;
+    const {list,searchterm,result}=this.state;
  
-    
+    if (!result){
+      return null;
+    };
+    console.log(this.state);
     
    
     return (
@@ -64,7 +78,7 @@ class App extends Component  {
         </Search>
         </div>
         <Table 
-          list = {list}
+          list = {result.hits}
           pattern = {searchterm} 
           onDismiss = {this.onDismiss} 
           />
@@ -88,7 +102,7 @@ class Search extends Component{
 
 const onSearch = (term)=>{
   return (item)=>{
-    return item.name.toLowerCase().includes(term.toLowerCase());
+    return item.title.toLowerCase().includes(term.toLowerCase());
   };
  }
 
@@ -106,9 +120,9 @@ class Table extends Component {
            list.filter(onSearch(pattern)).map((item)=>{
             return (
              
-                <div key = {item.objID} className="table-row">
-                  <span> {item.name}</span> 
-                  <Button onClick = {()=> {onDismiss(item.objID)}} type="button">x</Button>
+                <div key = {item.objectID} className="table-row">
+                  <span> {item.title}</span> 
+                  <Button onClick = {()=> {onDismiss(item.objectID)}} type="button">x</Button>
                 </div>
       
             );
