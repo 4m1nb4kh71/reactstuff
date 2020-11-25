@@ -1,13 +1,14 @@
 
 import './App.css';
 import React , {Component} from 'react';
-const DEFAULT_QUERY = 'readux';
+const DEFAULT_QUERY = 'redux';
 const PATH_BASE='https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH='query=';
 
-const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+
 const list = [];
+
 
 
  
@@ -23,9 +24,10 @@ class App extends Component  {
     };
 
     this.onDismiss = this.onDismiss.bind(this);
+  
   }
 
-  setSearchTopStories= (result)=>{
+  setSearchTopStories = (result)=>{
     this.setState({result});
   }
   fetchSearchTopStories = (searchTerm)=>{
@@ -36,8 +38,9 @@ class App extends Component  {
   }
 // fetching data when the component mounts 
   componentDidMount(){
-    const {searchTerm} = this.state;
-    this.fetchSearchTopStories(searchTerm);
+    const {searchterm} = this.state;
+    this.fetchSearchTopStories(searchterm);
+  
    }
 //
   onDismiss = (id)=>{
@@ -57,9 +60,15 @@ class App extends Component  {
     this.setState({searchterm:event.target.value});
     console.log(this.state.searchterm);
   }
-  
+  onSearchSubmit = (event)=> {
+    const {searchterm} = this.state;
+    this.fetchSearchTopStories(searchterm);
+    event.preventDefault();
+    const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchterm}`;
+    console.log(url);
+  }
   render(){
-    const {list,searchterm,result}=this.state;
+    const {searchterm,result}=this.state;
  
     if (!result){
       return null;
@@ -73,14 +82,16 @@ class App extends Component  {
         <Search
          value ={searchterm} 
          onSchange = {this.onsearchchange}
+         onSubmit = {this.onSearchSubmit}
          >
            search
         </Search>
         </div>
         <Table 
           list = {result.hits}
-          pattern = {searchterm} 
+        
           onDismiss = {this.onDismiss} 
+        
           />
       </div>
     );
@@ -90,10 +101,11 @@ class App extends Component  {
 class Search extends Component{
 
   render(){
-    const {value,onSchange,children} = this.props;
+    const {value,onSchange,onSubmit,children} = this.props;
     return (
-      <form>
+      <form >
             {children} <input type = "text" onChange= {onSchange} value = {value}/>
+            <Button onClick={onSubmit} type ="submit">Go</Button>
       </form>
     )
   }
@@ -117,7 +129,7 @@ class Table extends Component {
      <div className="table">
        {
          
-           list.filter(onSearch(pattern)).map((item)=>{
+           list.map((item)=>{
             return (
              
                 <div key = {item.objectID} className="table-row">
