@@ -112,18 +112,13 @@ class Search extends Component{
 }
 
 
-const onSearch = (term)=>{
-  return (item)=>{
-    return item.title.toLowerCase().includes(term.toLowerCase());
-  };
- }
 
  
 class Table extends Component {
  
   render(){
    
-    const {list,pattern,onDismiss}= this.props;
+    const {list,onDismiss}= this.props;
     return (
       
      <div className="table">
@@ -133,8 +128,14 @@ class Table extends Component {
             return (
              
                 <div key = {item.objectID} className="table-row">
-                  <span> {item.title}</span> 
-                  <Button onClick = {()=> {onDismiss(item.objectID)}} type="button">x</Button>
+                  <Button onClick = {()=> {onDismiss(item.objectID)}} type="button" >x</Button>
+                  <span className="title">
+                    <div className='element'><a href={item.url}  target="_blank" rel="noreferrer"><h3>{item.title}</h3></a></div> 
+                   
+                    <div  className='author' ><h5><i>{item.author}</i></h5></div>
+                  </span> 
+                  
+                  
                 </div>
       
             );
